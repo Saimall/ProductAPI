@@ -3,7 +3,9 @@ package com.example.productAPI_04_10_2024.controllers;
 import com.example.productAPI_04_10_2024.model.ProductModel;
 import com.example.productAPI_04_10_2024.service.Productservice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +51,24 @@ public class Product {
     public  ResponseEntity<ProductModel> getBrandname(@PathVariable String brandname){
         Optional<ProductModel>optional = productsList.stream().filter(product->product.getBrand().equals( brandname)).findFirst();
         return ResponseEntity.ok().body(optional.get());
+    }
+
+
+    @PostMapping(value = "/addproducts",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProductModel>addListProduct(@RequestBody ProductModel product){
+
+        boolean flag = false;
+
+        if(product!=null){
+            flag =productsList.add(product);
+        }
+
+        if(flag){
+           return ResponseEntity.status(HttpStatus.CREATED).body(product);
+        }
+        else {
+           return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
     }
 
     @PostMapping("/addproduct")
