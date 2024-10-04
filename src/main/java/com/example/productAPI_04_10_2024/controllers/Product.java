@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController // RESTCONTROLLER=Controller+Body //Spring MVC-Response-we return a ViewResolver-write to body of the html
 @RequestMapping
@@ -35,6 +36,19 @@ public class Product {
     @GetMapping("/productsList")
     public ArrayList<ProductModel> getArrayproductList(){
         return productsList;
+    }
+
+    @GetMapping(value = "/product/{id}" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<ProductModel> getByID(@PathVariable Long id){
+        Optional<ProductModel>optional = productsList.stream().filter(product->product.getProductId()==id).findFirst();
+        return ResponseEntity.ok().body(optional.get());
+    }
+
+    //strings comapreions use equals
+    @GetMapping(value = "/product/brand/{brandname}" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<ProductModel> getBrandname(@PathVariable String brandname){
+        Optional<ProductModel>optional = productsList.stream().filter(product->product.getBrand().equals( brandname)).findFirst();
+        return ResponseEntity.ok().body(optional.get());
     }
 
     @PostMapping("/addproduct")
